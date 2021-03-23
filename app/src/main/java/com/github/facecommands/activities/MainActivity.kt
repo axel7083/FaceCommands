@@ -11,9 +11,11 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.github.facecommands.services.FloatingView
+import com.github.facecommands.Utils
+import com.github.facecommands.services.FloatingViewService
 import com.github.facecommands.Utils.isAccessServiceEnabled
 import com.github.facecommands.databinding.ActivityMainBinding
+import com.github.facecommands.services.AutoService
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
@@ -25,7 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
         private const val RC_HANDLE_CAMERA_PERM = 2
         private const val RC_HANDLE_ACCESSIBILITY = 3
         private const val RC_HANDLE_SETTINGS = 4
-        private const val MY_PREFS = "faceCommands"
+        public const val MY_PREFS = "faceCommands"
         private const val TAG = "MainActivity"
     }
 
@@ -41,11 +43,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         loadSettings()
 
         // Setup switch
-        refreshSwitches()
+        refreshStartBtn()
 
 
         // Setup spinner
@@ -68,9 +69,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
         binding.rightEyeSpinner.onItemSelectedListener = this
         binding.leftEyeSpinner.onItemSelectedListener = this
 
-
-
-        //findViewById<View>(R.id.startFloat).setOnClickListener(this)
+        binding.startFloat.setOnClickListener(this)
     }
 
     private fun saveSettings() {
@@ -122,16 +121,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
 
 
     override fun onClick(v: View?) {
-        if (Settings.canDrawOverlays(this)) {
-            startService(Intent(this@MainActivity, FloatingView::class.java))
-            finish()
-        } else {
-            askPermission()
-            Toast.makeText(
-                    this,
-                    "You need System Alert Window Permission to do this",
-                    Toast.LENGTH_SHORT
-            ).show()
+
+        if(v == null)
+            return
+
+        if(v.id == binding.startFloat.id ) {
+            if(Utils.isServiceRunning(FloatingViewService::class.java, this)) {
+                binding.startFloat.text = "Already running"
+                binding.startFloat.isEnabled = false
+                return
+            }
+            else
+            {
+                startService(Intent(this@MainActivity, FloatingViewService::class.java))
+                finish()
+            }
         }
     }
 
@@ -167,11 +171,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
                     "Camera permission granted - initialize the camera source"
             )
             // we have permission
-            refreshSwitches()
+            refreshStartBtn()
             return
         }
         Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show()
-        refreshSwitches()
+        refreshStartBtn()
     }
 
     override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
@@ -192,13 +196,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
                 openSettings()
         }
         else if(p0.id == binding.accessibilitySwitch.id) {
-            if(p1)
-                startActivityForResult(
-                        Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),
-                        RC_HANDLE_ACCESSIBILITY
-                );
-            else
-                openSettings()
+            startActivityForResult(
+                Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),
+                RC_HANDLE_ACCESSIBILITY
+            )
         }
     }
 
@@ -214,18 +215,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_HANDLE_ACCESSIBILITY) {
             if (resultCode == RESULT_OK) {
-                refreshSwitches()
+                refreshStartBtn()
             }
             if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG,"RC_HANDLE_ACCESSIBILITY cancel")
-                refreshSwitches()
+                refreshStartBtn()
 
                 if(!binding.accessibilitySwitch.isChecked)
                     Toast.makeText(this,"You need to activate the \"Blink to scroll\" service to use this application.",Toast.LENGTH_LONG).show()
             }
         }
         else if(requestCode == RC_HANDLE_SETTINGS) {
-            refreshSwitches()
+            refreshStartBtn()
         }
     } //onActivityResult
 
@@ -243,11 +244,30 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
         ) == PackageManager.PERMISSION_GRANTED
         binding.accessibilitySwitch.isChecked = isAccessServiceEnabled(
                 this,
-                FloatingView::class.java
+                AutoService::class.java
         )
 
         binding.appearOnTopSwitch.setOnCheckedChangeListener(this)
         binding.cameraSwitch.setOnCheckedChangeListener(this)
         binding.accessibilitySwitch.setOnCheckedChangeListener(this)
+    }
+
+    private fun checkPermissions() : Boolean {
+        refreshSwitches()
+        return binding.appearOnTopSwitch.isChecked  && binding.cameraSwitch.isChecked && binding.accessibilitySwitch.isChecked
+    }
+
+    private fun refreshStartBtn() {
+
+        if(checkPermissions()) {
+            binding.startFloat.text = "Start"
+            binding.startFloat.isEnabled = true
+        }
+        else
+        {
+            binding.startFloat.text = "Start"
+            binding.startFloat.isEnabled = false
+        }
+
     }
 }

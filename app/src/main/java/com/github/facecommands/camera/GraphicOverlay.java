@@ -17,6 +17,7 @@ package com.github.facecommands.camera;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -51,7 +52,7 @@ public class GraphicOverlay extends View {
     private float mHeightScaleFactor = 1.0f;
     private int mFacing = CameraSource.CAMERA_FACING_BACK;
     private Set<Graphic> mGraphics = new HashSet<>();
-
+    private static final int BACKGROUND = Color.TRANSPARENT;
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass
      * this and implement the {@link Graphic#draw(Canvas)} method to define the
@@ -128,6 +129,7 @@ public class GraphicOverlay extends View {
     public void clear() {
         synchronized (mLock) {
             mGraphics.clear();
+
         }
         postInvalidate();
     }
@@ -173,6 +175,8 @@ public class GraphicOverlay extends View {
         super.onDraw(canvas);
 
         synchronized (mLock) {
+            canvas.drawColor(BACKGROUND);
+
             if ((mPreviewWidth != 0) && (mPreviewHeight != 0)) {
                 mWidthScaleFactor = (float) canvas.getWidth() / (float) mPreviewWidth;
                 mHeightScaleFactor = (float) canvas.getHeight() / (float) mPreviewHeight;
@@ -181,6 +185,9 @@ public class GraphicOverlay extends View {
             for (Graphic graphic : mGraphics) {
                 graphic.draw(canvas);
             }
+
+
+            //setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }

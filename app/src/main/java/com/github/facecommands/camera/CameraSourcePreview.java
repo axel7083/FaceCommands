@@ -15,13 +15,17 @@
  */
 package com.github.facecommands.camera;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.CameraSource;

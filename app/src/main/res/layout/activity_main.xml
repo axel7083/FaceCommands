@@ -82,7 +82,8 @@
                     android:src="@drawable/ic_information"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="10dp"
+                    android:visibility="gone"/>
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/appear_on_top_switch"
@@ -111,7 +112,8 @@
                     android:src="@drawable/ic_information"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="10dp"
+                    android:visibility="gone"/>
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/camera_switch"
@@ -141,7 +143,8 @@
                     android:src="@drawable/ic_information"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="10dp"
+                    android:visibility="gone"/>
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/accessibility_switch"

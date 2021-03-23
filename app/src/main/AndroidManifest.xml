@@ -22,7 +22,7 @@
         </activity>
 
         <service
-            android:name=".services.FloatingView"
+            android:name=".services.FloatingViewService"
             android:enabled="true"
             android:exported="false" />
 

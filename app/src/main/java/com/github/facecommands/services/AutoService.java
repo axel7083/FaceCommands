@@ -8,14 +8,13 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Toast;
 
 public class AutoService extends AccessibilityService {
-    private Handler mHandler;
-    private int mX;
-    private int mY;
 
     private static final String TAG = "AutoService";
+
+    private Handler mHandler;
+    private int x1, x2, y1, y2;
 
     @Override
     public void onCreate() {
@@ -28,28 +27,25 @@ public class AutoService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         Log.d(TAG,"onServiceConnected");
-        startService(new Intent(this, FloatingView.class));
+        startService(new Intent(this, FloatingViewService.class));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("Service","SERVICE STARTED");
+        Log.d(TAG,"onStartCommand");
         if(intent!=null){
             String action = intent.getStringExtra("action");
-            if (action.equals("play")) {
-                mX = intent.getIntExtra("x", 0);
-                mY = intent.getIntExtra("y", 0);
-
-                Log.d("x_value",Integer.toString(mX));
-                Log.d("y_value",Integer.toString(mY));
+            if (action.equals("swipe")) {
+                x1 = intent.getIntExtra("x1", 0);
+                x2 = intent.getIntExtra("x2", 0);
+                y1 = intent.getIntExtra("y1", 0);
+                y2 = intent.getIntExtra("y2", 0);
 
                 if (mRunnable == null) {
                     mRunnable = new IntervalRunnable();
                 }
-                //playTap(mX,mY);
-                //mHandler.postDelayed(mRunnable, 1000);
+
                 mHandler.post(mRunnable);
-                Toast.makeText(getBaseContext(), "Started", Toast.LENGTH_SHORT).show();
             }
             else if(action.equals("stop")){
                 mHandler.removeCallbacksAndMessages(null);
@@ -58,37 +54,10 @@ public class AutoService extends AccessibilityService {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    //@RequiresApi(api = Build.VERSION_CODES.N)
-    private void playTap(int x, int y) {
-       //Log.d("TAPPED","STARTED TAPpING");
-        Path swipePath = new Path();
-        swipePath.moveTo(x, y);
-        swipePath.lineTo(x+20, y+20);
-        GestureDescription.Builder gestureBuilder = new GestureDescription.Builder();
-        gestureBuilder.addStroke(new GestureDescription.StrokeDescription(swipePath, 0, 10));
-        //dispatchGesture(gestureBuilder.build(), null, null);
-        //Log.d("hello","hello?");
-        dispatchGesture(gestureBuilder.build(), new GestureResultCallback() {
-            @Override
-            public void onCompleted(GestureDescription gestureDescription) {
-                Log.d("Gesture Completed","Gesture Completed");
-                super.onCompleted(gestureDescription);
-                //mHandler.postDelayed(mRunnable, 1);
-                mHandler.post(mRunnable);
-            }
 
-            @Override
-            public void onCancelled(GestureDescription gestureDescription) {
-                //Log.d("Gesture Cancelled","Gesture Cancelled");
-                super.onCancelled(gestureDescription);
-            }
-        }, null);
-        //Log.d("hi","hi?");
-    }
 
 
     private void touchTo(int x1, int y1, int x2, int y2) {
-
         Path swipePath = new Path();
         swipePath.moveTo(x1, y1);
         swipePath.lineTo(x2, y2);
@@ -103,7 +72,6 @@ public class AutoService extends AccessibilityService {
 
     }
 
-
     @Override
     public void onInterrupt() {
         Log.d(TAG,"onInterrupt");
@@ -112,7 +80,7 @@ public class AutoService extends AccessibilityService {
     @Override
     public void onDestroy() {
         Log.d(TAG,"onDestroy");
-        stopService(new Intent(this, FloatingView.class));
+        stopService(new Intent(this, FloatingViewService.class));
         super.onDestroy();
     }
 
@@ -121,9 +89,8 @@ public class AutoService extends AccessibilityService {
     private class IntervalRunnable implements Runnable {
         @Override
         public void run() {
-            Log.d("clicked","click");
-            //playTap(mX, mY);
-            touchTo(mX, mY, mX, mY);
+            Log.d("IntervalRunnable","Runnable");
+            touchTo(x1, y1, x2, y2);
         }
     }
 }
