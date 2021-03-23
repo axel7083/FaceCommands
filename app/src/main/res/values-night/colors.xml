@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/silver</color>
+    <color name="colorPrimaryDark">@color/background</color>
+    <color name="colorAccent">@color/blue</color>
+    <color name="textColorPrimary">#F8F8F8</color>
+
+    <color name="background">#000000</color>
+    <color name="background2">#171717</color>
+
+    <!--<color name="background">#F2F2F2</color>-->
+    <color name="white">#FCFCFC</color>
+    <color name="silver">#D0D0D0</color>
+    <color name="grey">#909090</color>
+    <color name="light_grey">#E6E6E6</color>
+    <color name="arsenic">#2D2D2D</color>
+    <color name="blue">#328EE5</color>
+    <color name="yellow">#fcbe15</color>
+    <color name="purple">#8e01ff</color>
+    <color name="green">#1CCA05</color>
+    <color name="red">#E53232</color>
+</resources>

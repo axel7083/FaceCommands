@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Blink to scroll</string>
+
+    <string-array name="scroll_actions">
+        <item>Scroll down</item>
+        <item>Scroll up</item>
+    </string-array>
+</resources>
