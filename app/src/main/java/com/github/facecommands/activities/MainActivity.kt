@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, CompoundButton.O
                     TAG,
                     "Got unexpected permission result: $requestCode"
             )
-            super.onRequestPermissionsResult(requestCode, permissions!!, grantResults)
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             return
         }
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

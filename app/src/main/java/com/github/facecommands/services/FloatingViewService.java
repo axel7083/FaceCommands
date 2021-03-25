@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -22,11 +21,9 @@ import androidx.core.app.ActivityCompat;
 
 import com.github.facecommands.R;
 import com.github.facecommands.Utils;
-import com.github.facecommands.activities.MainActivity;
 import com.github.facecommands.camera.CameraSourcePreview;
 import com.github.facecommands.camera.GraphicOverlay;
 import com.github.facecommands.faces.OnFaceGesture;
-import com.github.facecommands.services.AutoService;
 import com.google.android.gms.vision.CameraSource;
 
 import java.io.IOException;
@@ -105,11 +102,8 @@ public class FloatingViewService extends Service implements View.OnClickListener
         {
             layout_parms = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         }
-
         else {
-
             layout_parms = WindowManager.LayoutParams.TYPE_PHONE;
-
         }
 
         //setting the layout parameters
