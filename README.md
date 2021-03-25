@@ -1,6 +1,6 @@
 # FaceCommands
 
-This application can display gestures such as scrolling according to facial expression. In particular it allows to detect single eye blinking. By default, blinking with the left eye will scroll down, and blinking with the right eyes will scroll up. 
+This application can displays gestures such as scrolling according to facial expression. In particular it allows to detect single eye blinking. By default, blinking with the left eye will scroll down, and blinking with the right eyes will scroll up. 
 
 This application was design to use Tiktok without hands. Allowing to scroll without touching your screen.
 
