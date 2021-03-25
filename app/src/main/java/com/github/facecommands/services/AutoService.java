@@ -1,13 +1,23 @@
 package com.github.facecommands.services;
 
+import android.Manifest;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Path;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+
+import com.github.facecommands.activities.MainActivity;
+
+import static com.github.facecommands.Utils.isServiceRunning;
 
 public class AutoService extends AccessibilityService {
 
@@ -27,7 +37,18 @@ public class AutoService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         Log.d(TAG,"onServiceConnected");
-        startService(new Intent(this, FloatingViewService.class));
+
+        if(!checkPermission()) {
+            Toast.makeText(this,"Please grant all permissions before use",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+
+        if(!isServiceRunning(FloatingViewService.class, this)) {
+            Log.d(TAG,"FloatingViewService NOT running");
+            startService(new Intent(this, FloatingViewService.class));
+        }
     }
 
     @Override
@@ -92,5 +113,13 @@ public class AutoService extends AccessibilityService {
             Log.d("IntervalRunnable","Runnable");
             touchTo(x1, y1, x2, y2);
         }
+    }
+
+    private boolean checkPermission() {
+        return Settings.canDrawOverlays(this) &&
+                ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.CAMERA
+                ) == PackageManager.PERMISSION_GRANTED;
     }
 }

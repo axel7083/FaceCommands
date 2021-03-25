@@ -57,6 +57,10 @@ public class FloatingViewService extends Service implements View.OnClickListener
     int posX = -1;
     int posY = -1;
 
+
+   // int overlayWidth;
+   // int overlayHeight;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -71,7 +75,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
 
         // Load settings
         loadSettings();
-
 
         WindowManager window = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         Display display = window.getDefaultDisplay();
@@ -124,6 +127,8 @@ public class FloatingViewService extends Service implements View.OnClickListener
             params.y = posY;
         }
 
+
+
         //getting windows services and adding the floating view to it
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mWindowManager.addView(myFloatingView, params);
@@ -140,7 +145,7 @@ public class FloatingViewService extends Service implements View.OnClickListener
             private float initialTouchY;
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.d("TOUCH","THIS IS TOUCHED");
+                //Log.d("TOUCH","THIS IS TOUCHED");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         initialX = params.x;
@@ -157,6 +162,10 @@ public class FloatingViewService extends Service implements View.OnClickListener
                         //this code is helping the widget to move around the screen with fingers
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY + (int) (event.getRawY() - initialTouchY);
+
+                        /*Log.d(TAG,"posX: " + params.x);
+                        Log.d(TAG,"posY: " + params.y);*/
+
                         mWindowManager.updateViewLayout(myFloatingView, params);
                         return true;
                 }
@@ -173,6 +182,20 @@ public class FloatingViewService extends Service implements View.OnClickListener
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        // TODO: avoid the view to be touch when scrolling => prevent the overlay to be in the center of the screen
+        /*myFloatingView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                overlayWidth = myFloatingView.getMeasuredWidth();
+                overlayHeight = myFloatingView.getMeasuredHeight();
+            }
+        });*/
+
+        //Log.d(TAG,"WIDTH: " + myFloatingView.getMeasuredWidth());
+        //Log.d(TAG,"HEIGHT: " + myFloatingView.getMeasuredHeight());
+
     }
 
     private void loadSettings() {
@@ -235,7 +258,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
     public void onSmile() {
 
     }
-
 
     private void onCommand(int val) {
         switch (val)
